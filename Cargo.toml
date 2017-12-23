@@ -6,3 +6,6 @@ authors = ["Fabjan Sukalia <fsukalia@gmail.com>"]
 [dependencies]
 nom = "^3.2"
 
+[dev-dependencies]
+rand = "^0.4"
+

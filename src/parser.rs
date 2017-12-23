@@ -8,3 +8,8 @@ named!(
     header_flags<HeaderFlags>,
     map!(take!(1), |flags| HeaderFlags::from(flags[0]))
 );
+
+named!(
+    granule_position<GranulePosition>,
+    map!(le_u64, |pos| GranulePosition::from(pos))
+);
