@@ -36,6 +36,7 @@ pub struct OggHeader<'a> {
     pub flags: Flags,
     pub pos: GranulePosition,
     pub serial_number: u32,
+    pub sequence_number: u32,
     pub crc32: u32,
     pub segment_table: &'a [u8],
 }
@@ -65,7 +66,7 @@ mod tests {
         let range = Range::new(0, 0xFFFFFFFFFFFFFFFFu64);
         let mut rng = thread_rng();
 
-        for i in 0..0xFFFF {
+        for _ in 0..0xFFFF {
             let pos = range.ind_sample(&mut rng);
             assert_eq!(GranulePosition::Position(pos), GranulePosition::from(pos));
         }

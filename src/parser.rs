@@ -21,21 +21,34 @@ named!(segment_table<&[u8]>, length_data!(le_u8));
 
 #[cfg_attr(rustfmt, rustfmt_skip)]
 named!(
-    parse_header<OggHeader>,
+    pub parse_header<OggHeader>,
     do_parse!(
         magic >>
         version >>
         flags: header_flags >>
         pos: granule_position >>
         serial: serial_number >>
+        seq_number: sequence_number >>
         crc32: crc >>
         seg_table: segment_table >>
         (OggHeader {
             flags: flags,
             pos: pos,
             serial_number: serial,
+            sequence_number: seq_number,
             crc32: crc32,
             segment_table: seg_table,
         })
     )
 );
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn empty_file() {
+        let data = include_bytes!("../test/test01.ogg");
+        assert!(parse_header(data).is_done());
+    }
+}
