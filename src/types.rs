@@ -1,13 +1,13 @@
 #[derive(Debug, PartialEq)]
-pub struct HeaderFlags {
+pub struct Flags {
     continued: bool,
     first_page: bool,
     last_page: bool,
 }
 
-impl From<u8> for HeaderFlags {
+impl From<u8> for Flags {
     fn from(byte: u8) -> Self {
-        HeaderFlags {
+        Flags {
             continued: (byte & 0b0000_0001) != 0,
             first_page: (byte & 0b0000_0010) != 0,
             last_page: (byte & 0b0000_0100) != 0, // FIXME check if other unsupported flags are set
@@ -31,6 +31,15 @@ impl From<u64> for GranulePosition {
     }
 }
 
+#[derive(Debug, PartialEq)]
+pub struct OggHeader<'a> {
+    pub flags: Flags,
+    pub pos: GranulePosition,
+    pub serial_number: u32,
+    pub crc32: u32,
+    pub segment_table: &'a [u8],
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -41,13 +50,13 @@ mod tests {
     #[test]
     fn test_header_flags() {
         for i in 0..255u8 {
-            let reference = HeaderFlags {
+            let reference = Flags {
                 continued: (i & 0x01) != 0,
                 first_page: (i & 0x02) != 0,
                 last_page: (i & 0x04) != 0,
             };
 
-            assert_eq!(reference, HeaderFlags::from(i));
+            assert_eq!(reference, Flags::from(i));
         }
     }
 
