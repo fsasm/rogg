@@ -1,6 +1,7 @@
 sudo: false
 language: rust
 dist: trusty
+cache: cargo
 
 addons:
   apt:
