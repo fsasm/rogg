@@ -53,6 +53,8 @@ named!(
     )
 );
 
+named!(parse_all_pages<Vec<OggPage> >, many0!(parse_page));
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -70,5 +72,18 @@ mod tests {
         let (_, page) = parse_page(data).unwrap();
         let digest = page.calc_crc();
         assert_eq!(digest, page.header.crc32);
+    }
+
+    #[test]
+    fn test_crc_wikipedia() {
+        let data = include_bytes!("../test/Example.ogg");
+        let (rem, pages) = parse_all_pages(data).unwrap();
+
+        assert_eq!(rem.len(), 0);
+
+        for page in pages.iter() {
+            let digest = page.calc_crc();
+            assert_eq!(digest, page.header.crc32);
+        }
     }
 }
