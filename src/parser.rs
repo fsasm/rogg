@@ -1,5 +1,4 @@
 use types::*;
-
 use nom::*;
 
 named!(magic, tag!(&[0x4F, 0x67, 0x67, 0x53]));
@@ -42,6 +41,18 @@ named!(
     )
 );
 
+named!(
+    pub parse_page<OggPage>,
+    do_parse!(
+        header: parse_header >>
+        data: take!(header.get_data_size()) >>
+        (OggPage {
+            header: header,
+            data: data,
+        })
+    )
+);
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -50,5 +61,14 @@ mod tests {
     fn empty_file() {
         let data = include_bytes!("../test/test01.ogg");
         assert!(parse_header(data).is_done());
+        assert!(parse_page(data).is_done());
+    }
+
+    #[test]
+    fn test_crc() {
+        let data = include_bytes!("../test/test02.ogg");
+        let (_, page) = parse_page(data).unwrap();
+        let digest = page.calc_crc();
+        assert_eq!(digest, page.header.crc32);
     }
 }

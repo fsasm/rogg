@@ -1,1 +1,2 @@
 test01.ogg: empty Ogg file
+test02.ogg: single page from http://v2v.cc/~j/theora_testsuite/chroma_siting_test.ogv (from the Theora testsuite)
